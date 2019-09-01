@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tong_ung/models/product_model.dart';
+import 'package:tong_ung/screens/detail.dart';
 import 'package:tong_ung/screens/my_style.dart';
 
 class ShowListProduct extends StatefulWidget {
@@ -30,7 +31,7 @@ class _ShowListProductState extends State<ShowListProduct> {
         // print('name = $name');
 
         ProductModel productModel = ProductModel(snapshot.data['Name'],
-            snapshot.data['Detail'], snapshot.data['Path']);
+            snapshot.data['Detail'], snapshot.data['Path'], snapshot.data['QRcode']);
         setState(() {
           productModels.add(productModel);
         });
@@ -42,40 +43,52 @@ class _ShowListProductState extends State<ShowListProduct> {
     return ListView.builder(
       itemCount: productModels.length,
       itemBuilder: (BuildContext context, int index) {
-        return Container(
-          decoration: index % 2 == 0
-              ? BoxDecoration(color: Colors.blue.shade100)
-              : BoxDecoration(color: Colors.blue.shade400),
-          child: Row(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.all(10.0),
-                width: MediaQuery.of(context).size.width * 0.5,
-                child: Image.network(
-                  productModels[index].path,
-                  fit: BoxFit.contain,
+        return GestureDetector(
+          child: Container(
+            decoration: index % 2 == 0
+                ? BoxDecoration(color: Colors.blue.shade100)
+                : BoxDecoration(color: Colors.blue.shade400),
+            child: Row(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  child: Image.network(
+                    productModels[index].path,
+                    fit: BoxFit.contain,
+                  ),
                 ),
-              ),
-              Container(
-                padding: EdgeInsets.all(10.0),
-                width: MediaQuery.of(context).size.width * 0.5,
-                height: MediaQuery.of(context).size.width * 0.5,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Container(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        productModels[index].name,
-                        style: TextStyle(fontSize: MyStyle().h1),
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  height: MediaQuery.of(context).size.width * 0.5,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Container(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          productModels[index].name,
+                          style: TextStyle(fontSize: MyStyle().h1),
+                        ),
                       ),
-                    ),
-                    Text(makeShortDetail(productModels[index].detail), style: index % 2 == 0 ? TextStyle(color: MyStyle().textColor) : TextStyle(color: MyStyle().whieteText),)
-                  ],
-                ),
-              )
-            ],
+                      Text(
+                        makeShortDetail(productModels[index].detail),
+                        style: index % 2 == 0
+                            ? TextStyle(color: MyStyle().textColor)
+                            : TextStyle(color: MyStyle().whieteText),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
+          onTap: () {
+            MaterialPageRoute materialPageRoute =
+                MaterialPageRoute(builder: (BuildContext context) => Detail(productModel: productModels[index],));
+                Navigator.of(context).push(materialPageRoute);
+          },
         );
       },
     );
