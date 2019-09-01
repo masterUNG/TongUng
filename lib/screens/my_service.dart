@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tong_ung/screens/home.dart';
 
 class MyService extends StatefulWidget {
   @override
@@ -64,7 +65,19 @@ class _MyServiceState extends State<MyService> {
       ),
       title: Text('Sign Out'),
       subtitle: Text('Sign Out Move to Home Page'),
+      onTap: () {
+        processSignOut();
+      },
     );
+  }
+
+  Future<void> processSignOut() async {
+    await firebaseAuth.signOut().then((response) {
+      MaterialPageRoute materialPageRoute =
+          MaterialPageRoute(builder: (BuildContext context) => Home());
+      Navigator.of(context).pushAndRemoveUntil(
+          materialPageRoute, (Route<dynamic> route) => false);
+    });
   }
 
   Widget showImage() {
